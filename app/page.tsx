@@ -223,6 +223,35 @@ export default function Home() {
     return data.racks || [];
   }, [data]);
 
+
+  const uniqueConditions = useMemo(() => {
+    const conditions = new Set<string>();
+    racks.forEach((rack) => {
+      rack.items.forEach((item) => {
+        if (item.condition) conditions.add(item.condition);
+      });
+    });
+    const result = Array.from(conditions);
+    // Initialize selectedConditions if empty
+    if (selectedConditions.length === 0 && result.length > 0) {
+      setSelectedConditions(result);
+    }
+    return result;
+  }, [racks]);
+
+  const conditionColors = useMemo(() => {
+    const mapping: Record<string, string> = {};
+    racks.forEach((rack) => {
+      rack.items.forEach((item) => {
+        if (item.condition && !mapping[item.condition]) {
+          mapping[item.condition] = item.color;
+        }
+      });
+    });
+    return mapping;
+  }, [racks]);
+
+  
   const boxSize = 1;
   const halfBoxSize = boxSize / 2;
 
@@ -241,8 +270,9 @@ export default function Home() {
           <meshStandardMaterial color="white" roughness={0.8} />
         </mesh>
         <gridHelper args={[40, 40, '#white', 'white']} />
-        
-        {
+       
+
+            {
           racks.map((rack, rackIdx: number) => {
 
             const maxPositionX: number[] = [];
@@ -398,6 +428,9 @@ export default function Home() {
             )
           })
         }
+
+
+
         <OrbitControls
           enableDamping
           enablePan

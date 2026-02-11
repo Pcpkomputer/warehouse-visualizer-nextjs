@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Warehouse Visualizer 3D
 
-## Getting Started
+A vibrant, cartoon-style 3D warehouse visualization built with Next.js, React Three Fiber, and Zustand.
 
-First, run the development server:
+## 🚀 Features
+- **3D Interactive Scene**: Navigate a warehouse with interactive racks, zones, and moving forklifts.
+- **Cartoon Aesthetic**: High-vibrancy, cel-shaded visuals using custom toon materials.
+- **Dynamic Filtering**: Filter warehouse items by condition (Good, Damage, Quarantine, Scrap).
+- **Global State**: State management powered by Zustand for seamless interaction.
+- **External Data**: Configuration driven by `warehouse-data.json`.
 
+## 🛠 Setup
+
+### Prerequisites
+- Node.js (v18+)
+- npm or yarn
+
+### Installation
+1. Clone the repository
+2. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏃 How to Run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Development Server
+Run the development server:
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the 3D visualizer.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Running Tests
+Execute unit tests for components and logic:
+```bash
+npm test
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📝 Notes
+- **Data Customization**: You can modify the warehouse layout (racks, items, routes) by editing `warehouse-data.json` in the root directory.
+- **Tech Stack**:
+  - [Next.js](https://nextjs.org/) - Framework
+  - [React Three Fiber](https://docs.pmnd.rs/react-three-fiber) - 3D Engine
+  - [Zustand](https://github.com/pmndrs/zustand) - State Management
+  - [Jest](https://jestjs.io/) & [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - Testing

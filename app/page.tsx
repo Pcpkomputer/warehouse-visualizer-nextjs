@@ -3,9 +3,12 @@
 import React, { useMemo, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, Html } from "@react-three/drei";
-import { WarehouseData, Item, RackData, ZoneData } from "@/types/warehouse";
+import { WarehouseData, Item, RackData, ZoneData, RouteData } from "@/types/warehouse";
 import Rack from "@/components/Rack";
 import Zone from "@/components/Zone";
+import RouteLine from "@/components/RouteLine";
+import Forklift from "@/components/Forklift";
+import PopupFilterCondition from "@/components/PopupFilterCondition";
 
 export default function Home() {
     const [data, setData] = useState<WarehouseData>({
@@ -166,6 +169,10 @@ export default function Home() {
 
     const zones = useMemo<ZoneData[]>(() => {
         return data.zones || [];
+    }, [data]);
+
+    const routes = useMemo<RouteData[]>(() => {
+        return data.routes || [];
     }, [data]);
 
     const uniqueConditions = useMemo(() => {
@@ -388,8 +395,20 @@ export default function Home() {
                     />
                 ))}
 
+                {routes?.map((route: any, routeIdx: number) => (
+                    <group key={`route-group-${routeIdx}`}>
+                        <RouteLine path={route.path as [number, number, number][]} color={route.color} />
+                        {route.type === "forklift" && <Forklift path={route.path as [number, number, number][]} color={route.color} speed={3} />}
+                    </group>
+                ))}
                 <OrbitControls enableDamping enablePan dampingFactor={0.05} minDistance={3} maxDistance={20} maxPolarAngle={Math.PI / 2} />
             </Canvas>
+            <PopupFilterCondition
+                uniqueConditions={uniqueConditions}
+                selectedConditions={selectedConditions}
+                setSelectedConditions={setSelectedConditions}
+                conditionColors={conditionColors}
+            />
         </>
     );
 }

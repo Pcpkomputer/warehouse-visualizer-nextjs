@@ -3,7 +3,8 @@
 import React, { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, Html } from "@react-three/drei";
-import { WarehouseData, RackData, ZoneData, RouteData } from "@/types/warehouse";
+import { WarehouseData, RackData, ZoneData, RouteData, Item } from "@/types/warehouse";
+import { ThreeEvent } from "@react-three/fiber";
 import Rack from "@/components/Rack";
 import Zone from "@/components/Zone";
 import RouteLine from "@/components/RouteLine";
@@ -114,7 +115,7 @@ export default function Home() {
                             >
                                 {rack.name}
                             </Text>
-                            {rack.items.map((item: any, itemIdx: number) => {
+                            {rack.items.map((item: Item, itemIdx: number) => {
                                 const x = item.position.x;
                                 const y = item.position.y;
 
@@ -127,7 +128,7 @@ export default function Home() {
                                         {selectedConditions.includes(item.condition) && (
                                             <group position={[itemX, itemY, itemZ]}>
                                                 <mesh
-                                                    onPointerEnter={(e: any) => {
+                                                    onPointerEnter={(e: ThreeEvent<PointerEvent>) => {
                                                         e.stopPropagation();
                                                         document.body.style.cursor = "pointer";
                                                         setSelectedItem(item);
@@ -226,7 +227,7 @@ export default function Home() {
                     );
                 })}
 
-                {zones?.map((zone: any, zoneIdx: number) => (
+                {zones?.map((zone: ZoneData, zoneIdx: number) => (
                     <group key={`zone-${zoneIdx}`} onPointerEnter={() => setSelectedItem(null)}>
                         <Zone
                             key={`zone-${zoneIdx}`}
@@ -240,7 +241,7 @@ export default function Home() {
                     </group>
                 ))}
 
-                {routes?.map((route: any, routeIdx: number) => (
+                {routes?.map((route: RouteData, routeIdx: number) => (
                     <group key={`route-group-${routeIdx}`} onPointerEnter={() => setSelectedItem(null)}>
                         <RouteLine path={route.path as [number, number, number][]} color={route.color} />
                         {route.type === "forklift" && <Forklift path={route.path as [number, number, number][]} color={route.color} speed={3} />}

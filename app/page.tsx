@@ -3,8 +3,9 @@
 import React, { useMemo, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, Html } from "@react-three/drei";
-import { WarehouseData, Item, RackData } from "@/types/warehouse";
+import { WarehouseData, Item, RackData, ZoneData } from "@/types/warehouse";
 import Rack from "@/components/Rack";
+import Zone from "@/components/Zone";
 
 export default function Home() {
     const [data, setData] = useState<WarehouseData>({
@@ -161,6 +162,10 @@ export default function Home() {
 
     const racks = useMemo<RackData[]>(() => {
         return data.racks || [];
+    }, [data]);
+
+    const zones = useMemo<ZoneData[]>(() => {
+        return data.zones || [];
     }, [data]);
 
     const uniqueConditions = useMemo(() => {
@@ -370,6 +375,18 @@ export default function Home() {
                         </group>
                     );
                 })}
+
+                {zones?.map((zone: any, zoneIdx: number) => (
+                    <Zone
+                        key={`zone-${zoneIdx}`}
+                        type={zone.type}
+                        name={zone.name}
+                        position={zone.coordinate as [number, number, number]}
+                        dimensions={zone.dimensions as [number, number]}
+                        color={zone.color}
+                        opacity={0.4}
+                    />
+                ))}
 
                 <OrbitControls enableDamping enablePan dampingFactor={0.05} minDistance={3} maxDistance={20} maxPolarAngle={Math.PI / 2} />
             </Canvas>

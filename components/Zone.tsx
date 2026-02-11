@@ -27,7 +27,7 @@ export default function Zone({
         <group position={position}>
             <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
                 <planeGeometry args={[width, depth]} />
-                <meshStandardMaterial
+                <meshToonMaterial
                     color={color}
                     transparent
                     opacity={opacity}
@@ -65,7 +65,7 @@ export default function Zone({
             ].map((cornerPos, idx) => (
                 <mesh key={`corner-${idx}`} position={cornerPos as [number, number, number]}>
                     <cylinderGeometry args={[0.1, 0.1, 0.3, 8]} />
-                    <meshStandardMaterial color={color} />
+                    <meshToonMaterial color={color} />
                 </mesh>
             ))}
         </group>

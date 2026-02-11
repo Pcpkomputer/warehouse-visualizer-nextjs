@@ -65,27 +65,27 @@ export default function Forklift({
         <group ref={groupRef}>
             <mesh position={[0, 0.4, 0]}>
                 <boxGeometry args={[0.8, 0.6, 1.2]} />
-                <meshStandardMaterial color={color} />
+                <meshToonMaterial color={color} />
             </mesh>
 
             <mesh position={[0, 1.0, -0.2]}>
                 <boxGeometry args={[0.7, 0.6, 0.5]} />
-                <meshStandardMaterial color="#333" transparent opacity={0.7} />
+                <meshToonMaterial color="#333" transparent opacity={0.7} />
             </mesh>
 
             <mesh position={[0, 0.8, 0.6]}>
                 <boxGeometry args={[0.6, 1.5, 0.1]} />
-                <meshStandardMaterial color="#444" />
+                <meshToonMaterial color="#444" />
             </mesh>
 
             <group position={[0, 0.1, 0.7]}>
                 <mesh position={[-0.2, 0, 0.3]}>
                     <boxGeometry args={[0.15, 0.05, 0.8]} />
-                    <meshStandardMaterial color="#888" />
+                    <meshToonMaterial color="#888" />
                 </mesh>
                 <mesh position={[0.2, 0, 0.3]}>
                     <boxGeometry args={[0.15, 0.05, 0.8]} />
-                    <meshStandardMaterial color="#888" />
+                    <meshToonMaterial color="#888" />
                 </mesh>
             </group>
 
@@ -97,7 +97,7 @@ export default function Forklift({
             ].map((pos, idx) => (
                 <mesh key={idx} position={pos as [number, number, number]} rotation={[0, 0, Math.PI / 2]}>
                     <cylinderGeometry args={[0.15, 0.15, 0.1, 12]} />
-                    <meshStandardMaterial color="#111" />
+                    <meshToonMaterial color="#111" />
                 </mesh>
             ))}
         </group>

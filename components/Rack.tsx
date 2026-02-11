@@ -48,7 +48,7 @@ export default function Rack({
             {poles.map((polePos, index) => (
                 <mesh key={`pole-${index}`} position={polePos as [number, number, number]}>
                     <boxGeometry args={[poleRadius * 2, height, poleRadius * 2]} />
-                    <meshStandardMaterial
+                    <meshToonMaterial
                         color={metalColor}
                     />
                 </mesh>
@@ -58,10 +58,8 @@ export default function Rack({
                 <group key={`shelf-${index}`} position={[0, shelf.y, 0]}>
                     <mesh position={[0, shelfThickness / 2, 0]}>
                         <boxGeometry args={[width + 0.1, shelfThickness, depth + 0.1]} />
-                        <meshStandardMaterial
+                        <meshToonMaterial
                             color={color}
-                            roughness={0.7}
-                            metalness={0.1}
                         />
                     </mesh>
                 </group>

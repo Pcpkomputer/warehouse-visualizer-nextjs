@@ -206,11 +206,11 @@ export default function Home() {
 
     return (
         <>
-            <Canvas style={{ width: "100%", height: "100vh", backgroundColor: "white" }} camera={{ position: [8, 6, 8], fov: 50, zoom: 0.8 }}>
-                <ambientLight intensity={0.7} />
-                <directionalLight position={[10, 10, 5]} intensity={1.2} castShadow />
-                <pointLight position={[-10, 10, -5]} intensity={0.5} />
-                <hemisphereLight args={["#ffffff", "#444444", 0.8]} />
+            <Canvas style={{ width: "100%", height: "100vh", backgroundColor: "white" }} camera={{ position: [8, 10, 8], fov: 50, zoom: 0.6 }}>
+                <ambientLight intensity={1.2} />
+                <directionalLight position={[10, 10, 5]} intensity={1.8} castShadow />
+                <pointLight position={[-10, 10, -5]} intensity={0.6} />
+                <hemisphereLight args={["#ffffff", "#aaaaaa", 1.0]} />
                 <mesh
                     rotation={[-Math.PI / 2, 0, 0]}
                     position={[0, -0.01, 0]}
@@ -218,10 +218,10 @@ export default function Home() {
                     onPointerEnter={() => setSelectedItem(null)}
                 >
                     <planeGeometry args={[100, 100]} />
-                    <meshToonMaterial color="#CDD6E3" />
+                    <meshToonMaterial color="#F3F4F6" />
                 </mesh>
                 <gridHelper
-                    args={[100, 100, "#e6e6e6", "#e6e6e6"]}
+                    args={[100, 100, "#F9FAFB", "#F9FAFB"]}
                     onPointerEnter={() => setSelectedItem(null)}
                 />
 
@@ -246,7 +246,7 @@ export default function Home() {
 
                     return (
                         <group key={rackIdx} onPointerEnter={() => setSelectedItem(null)}>
-                            <Rack color="#ACBAC4" position={rack.coordinate} shelves={maxY} width={3} height={rackHeight} depth={1} />
+                            <Rack color="#94A3B8" position={rack.coordinate} shelves={maxY} width={3} height={rackHeight} depth={1} />
                             <Text
                                 position={[rack.coordinate[0], rack.coordinate[1] + rackHeight + 1.5, rack.coordinate[2]]}
                                 fontSize={0.3}

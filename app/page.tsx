@@ -211,11 +211,19 @@ export default function Home() {
                 <directionalLight position={[10, 10, 5]} intensity={0.8} castShadow />
                 <pointLight position={[-10, 10, -5]} intensity={0.3} />
                 <hemisphereLight args={["#ffffff", "#444444", 0.6]} />
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-                    <planeGeometry args={[40, 40]} />
+                <mesh
+                    rotation={[-Math.PI / 2, 0, 0]}
+                    position={[0, -0.01, 0]}
+                    receiveShadow
+                    onPointerEnter={() => setSelectedItem(null)}
+                >
+                    <planeGeometry args={[100, 100]} />
                     <meshStandardMaterial color="white" roughness={0.8} />
                 </mesh>
-                <gridHelper args={[40, 40, "#white", "white"]} />
+                <gridHelper
+                    args={[100, 100, "#white", "white"]}
+                    onPointerEnter={() => setSelectedItem(null)}
+                />
 
                 {racks.map((rack, rackIdx: number) => {
                     const maxPositionX: number[] = [];
@@ -237,7 +245,7 @@ export default function Home() {
                     const shelfSpacing = rackHeight / maxY;
 
                     return (
-                        <group key={rackIdx}>
+                        <group key={rackIdx} onPointerEnter={() => setSelectedItem(null)}>
                             <Rack position={rack.coordinate} shelves={maxY} width={3} height={rackHeight} depth={1} />
                             <Text
                                 position={[rack.coordinate[0], rack.coordinate[1] + rackHeight + 1.5, rack.coordinate[2]]}
@@ -254,7 +262,6 @@ export default function Home() {
                                 const x = item.position.x;
                                 const y = item.position.y;
 
-                                // Calculate position: align items with rack shelves
                                 const itemX = rack.coordinate[0] - 1 + x;
                                 const itemY = rack.coordinate[1] + y * shelfSpacing + halfBoxSize;
                                 const itemZ = rack.coordinate[2];
@@ -262,33 +269,34 @@ export default function Home() {
                                 return (
                                     <group key={`${rackIdx}-item-${itemIdx}`}>
                                         {selectedConditions.includes(item.condition) && (
-                                            <mesh
-                                                position={[itemX, itemY, itemZ]}
-                                                onClick={(e: any) => {
-                                                    e.stopPropagation();
-                                                    setSelectedItem(item);
-                                                }}
-                                                onPointerOver={() => (document.body.style.cursor = "pointer")}
-                                                onPointerOut={() => (document.body.style.cursor = "auto")}
-                                            >
-                                                <boxGeometry args={[boxSize, boxSize, boxSize]} />
-                                                <meshStandardMaterial
-                                                    color={item?.color}
-                                                    emissive={selectedItem?.serialNo === item.serialNo ? item.color : "black"}
-                                                    emissiveIntensity={selectedItem?.serialNo === item.serialNo ? 0.5 : 0}
-                                                />
-                                                <Text fontSize={0.1} position={[0, 0.1, 0.52]}>
+                                            <group position={[itemX, itemY, itemZ]}>
+                                                <mesh
+                                                    onPointerEnter={(e: any) => {
+                                                        e.stopPropagation();
+                                                        document.body.style.cursor = "pointer";
+                                                        setSelectedItem(item);
+                                                    }}
+                                                >
+                                                    <boxGeometry args={[boxSize, boxSize, boxSize]} />
+                                                    <meshStandardMaterial
+                                                        color={item?.color}
+                                                        emissive={selectedItem?.serialNo === item.serialNo ? item.color : "black"}
+                                                        emissiveIntensity={selectedItem?.serialNo === item.serialNo ? 0.5 : 0}
+                                                    />
+                                                </mesh>
+                                                <Text fontSize={0.1} position={[0, 0.1, 0.52]} raycast={() => null}>
                                                     {item?.condition}
                                                 </Text>
-                                                {/* Selection indicator */}
+
                                                 {selectedItem?.serialNo === item.serialNo && (
-                                                    <mesh position={[0, 0, 0]}>
+                                                    <mesh position={[0, 0, 0]} raycast={() => null}>
                                                         <boxGeometry args={[boxSize * 1.05, boxSize * 1.05, boxSize * 1.05]} />
                                                         <meshBasicMaterial color="white" wireframe transparent opacity={0.3} />
                                                     </mesh>
                                                 )}
+
                                                 {selectedItem?.serialNo === item.serialNo && (
-                                                    <Html center zIndexRange={[100, 0]}>
+                                                    <Html center zIndexRange={[100, 0]} pointerEvents="none">
                                                         <div
                                                             style={{
                                                                 transform: "translate(160px, -50%)",
@@ -302,7 +310,7 @@ export default function Home() {
                                                                 fontFamily: "inherit",
                                                                 zIndex: 1000,
                                                                 position: "relative",
-                                                                pointerEvents: "auto",
+                                                                pointerEvents: "none",
                                                             }}
                                                         >
                                                             <div
@@ -314,28 +322,6 @@ export default function Home() {
                                                                 }}
                                                             >
                                                                 <h3 style={{ margin: 0, color: "#111827", fontSize: "18px", fontWeight: 600 }}>Item Details</h3>
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setSelectedItem(null);
-                                                                    }}
-                                                                    style={{
-                                                                        border: "none",
-                                                                        background: "#f3f4f6",
-                                                                        width: "28px",
-                                                                        height: "28px",
-                                                                        borderRadius: "50%",
-                                                                        display: "flex",
-                                                                        alignItems: "center",
-                                                                        justifyContent: "center",
-                                                                        fontSize: "18px",
-                                                                        cursor: "pointer",
-                                                                        color: "#6b7280",
-                                                                        transition: "all 0.2s",
-                                                                    }}
-                                                                >
-                                                                    ×
-                                                                </button>
                                                             </div>
 
                                                             <div style={{ fontSize: "14px", lineHeight: "1.8", color: "#374151" }}>
@@ -374,7 +360,8 @@ export default function Home() {
                                                         </div>
                                                     </Html>
                                                 )}
-                                            </mesh>
+
+                                            </group>
                                         )}
                                     </group>
                                 );
@@ -384,19 +371,21 @@ export default function Home() {
                 })}
 
                 {zones?.map((zone: any, zoneIdx: number) => (
-                    <Zone
-                        key={`zone-${zoneIdx}`}
-                        type={zone.type}
-                        name={zone.name}
-                        position={zone.coordinate as [number, number, number]}
-                        dimensions={zone.dimensions as [number, number]}
-                        color={zone.color}
-                        opacity={0.4}
-                    />
+                    <group key={`zone-${zoneIdx}`} onPointerEnter={() => setSelectedItem(null)}>
+                        <Zone
+                            key={`zone-${zoneIdx}`}
+                            type={zone.type}
+                            name={zone.name}
+                            position={zone.coordinate as [number, number, number]}
+                            dimensions={zone.dimensions as [number, number]}
+                            color={zone.color}
+                            opacity={0.4}
+                        />
+                    </group>
                 ))}
 
                 {routes?.map((route: any, routeIdx: number) => (
-                    <group key={`route-group-${routeIdx}`}>
+                    <group key={`route-group-${routeIdx}`} onPointerEnter={() => setSelectedItem(null)}>
                         <RouteLine path={route.path as [number, number, number][]} color={route.color} />
                         {route.type === "forklift" && <Forklift path={route.path as [number, number, number][]} color={route.color} speed={3} />}
                     </group>

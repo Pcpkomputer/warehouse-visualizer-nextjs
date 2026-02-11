@@ -1,14 +1,38 @@
-export default function PopupFilterCondition({
-    uniqueConditions,
-    selectedConditions,
-    setSelectedConditions,
-    conditionColors,
-}: {
-    uniqueConditions: string[];
-    selectedConditions: string[];
-    setSelectedConditions: any;
-    conditionColors: Record<string, string>;
-}) {
+import React, { useMemo } from "react";
+import { useWarehouseStore } from "@/store/useWarehouseStore";
+
+export default function PopupFilterCondition() {
+    const {
+        data,
+        selectedConditions,
+        setSelectedConditions,
+        toggleCondition
+    } = useWarehouseStore();
+
+    const racks = data.racks || [];
+
+    const uniqueConditions = useMemo(() => {
+        const conditions = new Set<string>();
+        racks.forEach((rack) => {
+            rack.items.forEach((item) => {
+                if (item.condition) conditions.add(item.condition);
+            });
+        });
+        return Array.from(conditions);
+    }, [racks]);
+
+    const conditionColors = useMemo(() => {
+        const mapping: Record<string, string> = {};
+        racks.forEach((rack) => {
+            rack.items.forEach((item) => {
+                if (item.condition && !mapping[item.condition]) {
+                    mapping[item.condition] = item.color;
+                }
+            });
+        });
+        return mapping;
+    }, [racks]);
+
     return (
         <div
             style={{
@@ -47,11 +71,7 @@ export default function PopupFilterCondition({
                             type="checkbox"
                             style={{ display: "none" }}
                             checked={selectedConditions.includes(condition)}
-                            onChange={() => {
-                                setSelectedConditions((prev: any) =>
-                                    prev.includes(condition) ? prev.filter((c: any) => c !== condition) : [...prev, condition],
-                                );
-                            }}
+                            onChange={() => toggleCondition(condition)}
                         />
                         <div
                             style={{

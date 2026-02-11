@@ -1,167 +1,49 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, Html } from "@react-three/drei";
-import { WarehouseData, Item, RackData, ZoneData, RouteData } from "@/types/warehouse";
+import { WarehouseData, RackData, ZoneData, RouteData } from "@/types/warehouse";
 import Rack from "@/components/Rack";
 import Zone from "@/components/Zone";
 import RouteLine from "@/components/RouteLine";
 import Forklift from "@/components/Forklift";
 import PopupFilterCondition from "@/components/PopupFilterCondition";
+import { useWarehouseStore } from "@/store/useWarehouseStore";
+import warehouseData from "@/warehouse-data.json";
+
 
 export default function Home() {
-    const [data, setData] = useState<WarehouseData>({
-        racks: [
-            {
-                name: "Rack A-1",
-                coordinate: [-5, 0, -5],
-                items: [
-                    {
-                        serialNo: "ITEM-1001",
-                        lot: "LOT-2023-A01",
-                        description: "High Performance Brake Pads",
-                        condition: "Good",
-                        color: "#22c55e",
-                        position: {
-                            x: 1,
-                            y: 1,
-                        },
-                    },
-                    {
-                        serialNo: "ITEM-1002",
-                        lot: "LOT-2023-B05",
-                        description: "Oil Filter Type A",
-                        condition: "Damage",
-                        color: "#ef4444",
-                        position: {
-                            x: 2,
-                            y: 2,
-                        },
-                    },
-                    {
-                        serialNo: "ITEM-1003",
-                        lot: "LOT-2023-C12",
-                        description: "Spark Plug Set",
-                        condition: "Good",
-                        color: "#22c55e",
-                        position: {
-                            x: 0,
-                            y: 2,
-                        },
-                    },
-                ],
-            },
-            {
-                name: "Rack A-2",
-                coordinate: [-1.5, 0, -5],
-                items: [
-                    {
-                        serialNo: "ITEM-2001",
-                        lot: "LOT-2023-D09",
-                        description: "Air Filter",
-                        condition: "Quarantine",
-                        color: "#eab308",
-                        position: {
-                            x: 1,
-                            y: 1,
-                        },
-                    },
-                ],
-            },
-            {
-                name: "Rack A-3",
-                coordinate: [2, 0, -5],
-                items: [],
-            },
-            {
-                name: "Rack B-1",
-                coordinate: [-5, 0, -1],
-                items: [
-                    {
-                        serialNo: "ITEM-3001",
-                        lot: "LOT-2023-E22",
-                        description: "Headlight Assembly",
-                        condition: "Good",
-                        color: "#22c55e",
-                        position: {
-                            x: 1,
-                            y: 3,
-                        },
-                    },
-                    {
-                        serialNo: "ITEM-3002",
-                        lot: "LOT-2023-F33",
-                        description: "Rear Bumper",
-                        condition: "Scrap",
-                        color: "#000000",
-                        position: {
-                            x: 2,
-                            y: 2,
-                        },
-                    },
-                ],
-            },
-            {
-                name: "Rack B-2",
-                coordinate: [-1.5, 0, -1],
-                items: [],
-            },
-            {
-                name: "Rack B-3",
-                coordinate: [2, 0, -1],
-                items: [],
-            },
-            {
-                name: "Rack C-1",
-                coordinate: [-5, 0, 2],
-                items: [
-                    {
-                        serialNo: "ITEM-4001",
-                        lot: "LOT-2023-G45",
-                        description: "Timing Belt",
-                        condition: "Good",
-                        color: "#22c55e",
-                        position: {
-                            x: 1,
-                            y: 2,
-                        },
-                    },
-                ],
-            },
-            {
-                name: "Rack C-2",
-                coordinate: [-1.5, 0, 2],
-                items: [],
-            },
-        ],
-        zones: [
-            {
-                type: "loading_zone",
-                name: "Loading",
-                coordinate: [12, 0.02, 0],
-                dimensions: [6, 8],
-                color: "#fbbf24",
-            },
-        ],
-        routes: [
-            {
-                type: "forklift",
-                name: "Main Forklift Route",
-                path: [
-                    [-8, 0, 6],
-                    [-8, 0, -8],
-                    [8, 0, -8],
-                    [8, 0, 4],
-                    [12, 0, 4],
-                ],
-                color: "#facc15",
-            },
-        ],
-    });
+    const {
+        data,
+        setData,
+        selectedItem,
+        setSelectedItem,
+        selectedConditions,
+        setSelectedConditions
+    } = useWarehouseStore();
 
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-    const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
+    const hasInitializedFilter = React.useRef(false);
+
+    React.useEffect(() => {
+        setData(warehouseData as WarehouseData);
+    }, [setData]);
+
+    React.useEffect(() => {
+        if (data.racks.length > 0 && !hasInitializedFilter.current) {
+            const conditions = new Set<string>();
+            data.racks.forEach((rack) => {
+                rack.items.forEach((item) => {
+                    if (item.condition) conditions.add(item.condition);
+                });
+            });
+            const allConditions = Array.from(conditions);
+            if (allConditions.length > 0) {
+                setSelectedConditions(allConditions);
+                hasInitializedFilter.current = true;
+            }
+        }
+    }, [data.racks, setSelectedConditions]);
 
     const racks = useMemo<RackData[]>(() => {
         return data.racks || [];
@@ -174,32 +56,6 @@ export default function Home() {
     const routes = useMemo<RouteData[]>(() => {
         return data.routes || [];
     }, [data]);
-
-    const uniqueConditions = useMemo(() => {
-        const conditions = new Set<string>();
-        racks.forEach((rack) => {
-            rack.items.forEach((item) => {
-                if (item.condition) conditions.add(item.condition);
-            });
-        });
-        const result = Array.from(conditions);
-        if (selectedConditions.length === 0 && result.length > 0) {
-            setSelectedConditions(result);
-        }
-        return result;
-    }, [racks]);
-
-    const conditionColors = useMemo(() => {
-        const mapping: Record<string, string> = {};
-        racks.forEach((rack) => {
-            rack.items.forEach((item) => {
-                if (item.condition && !mapping[item.condition]) {
-                    mapping[item.condition] = item.color;
-                }
-            });
-        });
-        return mapping;
-    }, [racks]);
 
     const boxSize = 1;
     const halfBoxSize = boxSize / 2;
@@ -392,12 +248,7 @@ export default function Home() {
                 ))}
                 <OrbitControls enableDamping enablePan dampingFactor={0.05} minDistance={3} maxDistance={20} maxPolarAngle={Math.PI / 2} />
             </Canvas>
-            <PopupFilterCondition
-                uniqueConditions={uniqueConditions}
-                selectedConditions={selectedConditions}
-                setSelectedConditions={setSelectedConditions}
-                conditionColors={conditionColors}
-            />
+            <PopupFilterCondition />
         </>
     );
 }

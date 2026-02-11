@@ -55,7 +55,7 @@ export default function Forklift({
 
         const direction = new THREE.Vector3().subVectors(segment.end, segment.start).normalize();
         const targetQuaternion = new THREE.Quaternion().setFromUnitVectors(
-            new THREE.Vector3(0, 0, 1), // Default forward for our model
+            new THREE.Vector3(0, 0, 1),
             direction
         );
         groupRef.current.quaternion.slerp(targetQuaternion, 0.1);

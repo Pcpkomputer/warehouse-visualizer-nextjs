@@ -103,9 +103,9 @@ export default function Home() {
 
                     return (
                         <group key={rackIdx} onPointerEnter={() => setSelectedItem(null)}>
-                            <Rack color="#94A3B8" position={rack.coordinate} shelves={maxY} width={3} height={rackHeight} depth={1} />
+                            <Rack color="#94A3B8" position={rack.coordinate} shelves={maxY} width={3} height={4} depth={1} />
                             <Text
-                                position={[rack.coordinate[0], rack.coordinate[1] + rackHeight + 1.5, rack.coordinate[2]]}
+                                position={[rack.coordinate[0], 5.5, rack.coordinate[2]]}
                                 fontSize={0.3}
                                 color="#1f2937"
                                 anchorX="center"
@@ -119,8 +119,10 @@ export default function Home() {
                                 const x = item.position.x;
                                 const y = item.position.y;
 
+                                const adjustedY = (maxY - y + 1);
+
                                 const itemX = rack.coordinate[0] - 1 + x;
-                                const itemY = rack.coordinate[1] + y * shelfSpacing + halfBoxSize;
+                                const itemY = rack.coordinate[1] + adjustedY * shelfSpacing + halfBoxSize;
                                 const itemZ = rack.coordinate[2];
 
                                 return (
